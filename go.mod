@@ -1,4 +1,4 @@
-module github.com/didintri196/mikorm
+module github.com/dennes544/mikorm
 
 go 1.16
 
