@@ -24,6 +24,7 @@ type Configs struct {
 	Username  string
 	Password  string
 	ModeDebug bool
+	UseTls    bool
 }
 
 func New(config Configs) MikORM {
@@ -37,7 +38,16 @@ func New(config Configs) MikORM {
 
 func (route *MikORM) Run(query []string) *MikORM {
 	host := fmt.Sprintf("%s:%s", route.Ip, route.Port)
-	c, err := routeros.Dial(host, route.Username, route.Password)
+
+	var c *routeros.Client
+	var err error
+
+	if route.UseTls {
+		c, err = routeros.DialTLS(host, route.Username, route.Password, nil)
+	} else {
+		c, err = routeros.Dial(host, route.Username, route.Password)
+	}
+
 	if err != nil {
 		route.Debug().Msg(fmt.Sprintf("| ERROR | %s", err.Error()))
 		route.Error = err
